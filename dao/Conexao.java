@@ -6,13 +6,18 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.io.InputStream;
 
 public class Conexao {
 
     private static Properties getProperties() {
         Properties props = new Properties();
-        try (FileInputStream fis = new FileInputStream("db.properties")) {
-            props.load(fis);
+        try (InputStream is = Conexao.class.getClassLoader().getResourceAsStream("db.properties")) {
+            if (is == null) {
+                System.err.println("Arquivo db.properties não encontrado no Classpath.");
+                return props;
+            }
+            props.load(is);
         } catch (IOException e) {
             System.err.println("Erro ao carregar o arquivo db.properties: " + e.getMessage());
             e.printStackTrace();
